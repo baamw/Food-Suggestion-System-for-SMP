@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🍽 ผลลัพธ์เมนูอาหารที่แนะนำ</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+
+  <h1 class="title">🍛 ผลลัพธ์เมนูอาหารที่แนะนำ</h1>
+  <p id="calorieSummary" class="highlight"></p>
+
+  <div class="macros-summary">
+    <h2>โภชนาการรวม</h2>
+    <div class="macros-bars">
+      <div class="macro"><span class="label">โปรตีน</span><div class="bar"><div id="proteinBar" class="bar-fill"></div></div><span id="proteinVal">0 g</span></div>
+      <div class="macro"><span class="label">ไขมัน</span><div class="bar"><div id="fatBar" class="bar-fill"></div></div><span id="fatVal">0 g</span></div>
+      <div class="macro"><span class="label">คาร์บ</span><div class="bar"><div id="carbBar" class="bar-fill"></div></div><span id="carbVal">0 g</span></div>
+      <div class="macro"><span class="label">แคลรวม</span><div class="bar"><div id="calBar" class="bar-fill"></div></div><span id="calVal">0 kcal</span></div>
+    </div>
+  </div>
+  
+  <div class="remain-wrap">
+  <button id="remainBtn" class="remain-btn">
+    🍰 กินได้อีก... <span id="remainVal">0</span> kcal
+  </button>
+  <div id="overCalPopup" class="popup hidden"></div>
+</div>
+
+  <div id="resultBox"></div>
+
+  <div class="form-actions">
+    <a href="index.html" class="btn-3">⬅ กลับหน้าแรก</a>
+  </div>
+  </div>
+
+<script src="meals.js"></script>
+<script src="script.js"></script>
+
+<script>
+const data = JSON.parse(localStorage.getItem('mealInput'));
+if (!data) {
+  document.getElementById('resultBox').innerHTML = '<p>ไม่มีข้อมูล</p>';
+} else {
+  document.getElementById('calorieSummary').textContent =
+    `เป้าหมายแคลอรี่ ${data.tdee} kcal`;
+  generateAndRenderAll(data);
+};
+</script>
+
+</body>
+</html>

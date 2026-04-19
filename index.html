@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🍽 Food Suggestion System for Smart Meal Planning </title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+  <span class="candy-line"></span>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+
+  <h1 class="title">🍽 Food Suggestion System for Smart Meal Planning </h1>
+  <p class="subtitle">ระบบแนะนำอาหารเฉพาะบุคคล</p>
+
+  <form id="mealForm" autocomplete="off">
+    <div class="form-row">
+      <div class="form-group">
+        <label><i class="fas fa-user"></i> เพศ</label>
+        <select id="gender" required>
+          <option value="female">หญิง</option>
+          <option value="male">ชาย</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-weight"></i> น้ำหนัก (กก.)</label>
+        <input type="number" id="weight" min="30" max="300" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-ruler"></i> ส่วนสูง (ซม.)</label>
+        <input type="number" id="height" min="120" max="240" required>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-bolt"></i> อายุ</label>
+        <input type="number" id="age" min="10" max="100" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label><i class="fas fa-running"></i> ระดับกิจกรรม</label>
+        <select id="activity" required>
+          <option value="1.2">ไม่ออกกำลังกาย</option>
+          <option value="1.375">ออกกำลังกายเล็กน้อย (1-2 วัน/สัปดาห์)</option>
+          <option value="1.55">ปานกลาง (3-5 วัน/สัปดาห์)</option>
+          <option value="1.725">หนัก (6 วัน/สัปดาห์)</option>
+          <option value="1.9">หนักมาก (ออกกำลังหนัก + ทำงานหนัก)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-bullseye"></i> โหมดเป้าหมายสุขภาพ </label>
+        <select id="goalMode" required>
+          <option value="maintain">รักษาน้ำหนัก</option>
+          <option value="lose">ลดน้ำหนัก</option>
+          <option value="gain">เพิ่มน้ำหนัก</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="mealType"><i class="fas fa-utensils"></i> มื้ออาหาร</label>
+        <select id="mealType" required>
+          <option value="breakfast">Breakfast(มื้อเช้า)</option>
+          <option value="lunch">Lunch(มื้อกลางวัน)</option>
+          <option value="dinner">Dinner(มื้อเย็น)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label><i class="fas fa-list"></i> ประเภทอาหารที่ต้องการให้ระบบแนะนำโดยเฉพาะ </label>
+      <div class="checkbox-group" id="typeCheckboxes">
+        <label class="pill"><input type="checkbox" value="ผัด"> ผัด</label>
+        <label class="pill"><input type="checkbox" value="ต้ม"> ต้ม</label>
+        <label class="pill"><input type="checkbox" value="ย่าง"> ย่าง</label>
+        <label class="pill"><input type="checkbox" value="ทอด"> ทอด</label>
+        <label class="pill"><input type="checkbox" value="ยำ"> ยำ</label>
+        <label class="pill"><input type="checkbox" value="นึ่ง"> นึ่ง</label>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label><i class="fas fa-book"></i> เมนูที่รับประทาน </label>
+        <input type="text" id="eatenMeal" placeholder="พิมพ์ชื่อเมนู..." list="mealSuggestions">
+        <datalist id="mealSuggestions"></datalist>
+      </div>
+
+      <div class="rice-toggle">
+          <button type="button" class="rice-btn" data-rice="white"> 🍚 ข้าวสวย </button>
+          <button type="button" class="rice-btn" data-rice="sticky"> 🍙 ข้าวเหนียว </button>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-fire"></i> จำนวนแคลอรี่ที่รับประทาน (kcal)</label>
+        <input type="number" id="eatenCalories" placeholder=" จำนวนแคลอรี่ " min="0"> </div>
+       </div>
+
+    <p id="tdeeDisplay" class="highlight">กรอกข้อมูลด้านบนเพื่อคำนวณ </p>
+
+<div class="form-actions">
+  <button id="suggestMealBtn" type="button" class="btn-1">
+    <i class="fas fa-utensils"></i>
+    แนะนำเมนูอาหาร
+  </button>
+</div>
+
+  </form>
+</div>
+
+<script src="meals.js"></script>
+
+<script>
+const checkboxes = Array.from(document.querySelectorAll('#typeCheckboxes input'));
+const suggestMealBtn = document.getElementById('suggestMealBtn');
+const tdeeDisplay = document.getElementById('tdeeDisplay');
+const eatenMealInput = document.getElementById('eatenMeal');
+const eatenCaloriesInput = document.getElementById('eatenCalories');
+const mealSuggestions = document.getElementById('mealSuggestions');
+
+function calculateTDEE() {
+  const gender = document.getElementById('gender').value;
+  const weight = parseFloat(document.getElementById('weight').value);
+  const height = parseFloat(document.getElementById('height').value);
+  const age = parseFloat(document.getElementById('age').value);
+  const activity = parseFloat(document.getElementById('activity').value);
+  const mode = document.getElementById('goalMode').value;
+
+  if(!weight || !height || !age) {
+    tdeeDisplay.textContent = 'กรอกข้อมูลด้านบนเพื่อคำนวณค่า TDEE';
+    return null;
+  }
+
+  let bmr = gender === 'male'
+    ? (10 * weight) + (6.25 * height) - (5 * age) + 5
+    : (10 * weight) + (6.25 * height) - (5 * age) - 161;
+
+  let tdee = Math.round(bmr * activity);
+
+  if(mode === 'lose') tdee = Math.round(tdee * 0.85);
+  else if(mode === 'gain') tdee = Math.round(tdee * 1.15);
+
+  tdeeDisplay.textContent = `Daily Target (ปรับตามโหมดสุขภาพ): ${tdee} kcal`;
+  return tdee;
+}
+
+['gender','weight','height','age','activity','goalMode'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', calculateTDEE);
+});
+
+eatenMealInput.addEventListener('input', ()=>{
+  const val = eatenMealInput.value.trim().toLowerCase();
+  mealSuggestions.innerHTML = '';
+  if(!val) return;
+  const matches = meals.filter(m => m.name.toLowerCase().includes(val)).slice(0,8);
+  matches.forEach(m=>{
+    const opt = document.createElement('option');
+    opt.value = m.name;
+    mealSuggestions.appendChild(opt);
+  });
+  const exactMatch = meals.find(m => m.name.toLowerCase() === val);
+  if(exactMatch) eatenCaloriesInput.value = exactMatch.calories;
+});
+
+function goToResult(types=[]){
+  const tdee = calculateTDEE();
+  const data = {
+    gender: document.getElementById('gender').value,
+    weight: Number(document.getElementById('weight').value),
+    height: Number(document.getElementById('height').value),
+    age: Number(document.getElementById('age').value),
+    activity: Number(document.getElementById('activity').value),
+    goalMode: document.getElementById('goalMode').value,
+    mealType: document.getElementById('mealType').value,
+    types, tdee,
+    eatenMeal: eatenMealInput.value.trim(),
+    eatenCalories: Number(eatenCaloriesInput.value) || 0
+  };
+  localStorage.setItem('mealInput', JSON.stringify(data));
+  window.location.href = 'result.html';
+}
+
+const formElements = Array.from(document.querySelectorAll('#mealForm input, #mealForm select'));
+formElements.forEach((el, idx)=>{
+  el.addEventListener('keydown', e=>{
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      let nextIdx = idx + 1;
+      while(nextIdx < formElements.length && formElements[nextIdx].disabled) nextIdx++;
+      if(nextIdx < formElements.length) formElements[nextIdx].focus();
+      else suggestMealBtn.focus();
+    }
+  });
+});
+calculateTDEE();
+</script>
+
+<script>
+const riceNutrition = {
+  white: { calories: 160, protein: 3, fat: 0, carbs: 36 },
+  sticky: { calories: 220, protein: 4, fat: 1, carbs: 45 }
+};
+
+let selectedRice = null; 
+
+document.querySelectorAll('.rice-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const type = btn.dataset.rice;
+    let currentCalories = Number(eatenCaloriesInput.value || 0);
+    if (selectedRice) {
+      currentCalories -= riceNutrition[selectedRice].calories;
+    }
+    if (selectedRice === type) {
+      selectedRice = null;
+      btn.classList.remove('active');
+    } 
+    else {
+      document.querySelectorAll('.rice-btn').forEach(b => b.classList.remove('active'));
+      selectedRice = type;
+      btn.classList.add('active');
+      currentCalories += riceNutrition[type].calories;
+    }
+
+    eatenCaloriesInput.value = Math.max(0, currentCalories);
+  });
+});
+</script>
+
+<script>
+  suggestMealBtn.addEventListener('click', () => {
+  const selectedTypes = checkboxes
+    .filter(c => c.checked)
+    .map(c => c.value);
+  goToResult(selectedTypes);
+});
+</script>
+
+</body>
+</html>
